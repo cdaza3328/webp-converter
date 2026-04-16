@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WebP to JPG Converter</title>
+<style>
+body {
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+  text-align: center;
+  padding: 40px;
+}
+.container {
+  max-width: 500px;
+  margin: auto;
+  background: #1e293b;
+  padding: 30px;
+  border-radius: 12px;
+}
+input {
+  width: 80%;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  margin-bottom: 15px;
+}
+button {
+  padding: 10px 20px;
+  border: none;
+  background: #3b82f6;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#status {
+  margin-top: 15px;
+}
+img {
+  margin-top: 20px;
+  max-width: 100%;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>WebP → JPG Converter</h2>
+
+  <input type="text" id="url" placeholder="Paste WebP URL">
+  <br>
+  <button onclick="convert()">Convert</button>
+
+  <p id="status"></p>
+  <img id="result" />
+</div>
+
+<script>
+async function convert() {
+  const url = document.getElementById("url").value;
+  const status = document.getElementById("status");
+  const img = document.getElementById("result");
+
+  status.innerText = "Converting...";
+
+  try {
+    const res = await fetch("http://localhost:3000/convert", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ url })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      status.innerText = "Done!";
+      img.src = data.image;
+    } else {
+      status.innerText = "Error";
+    }
+
+  } catch (err) {
+    status.innerText = "Server error";
+  }
+}
+</script>
+
+</body>
+</html>
